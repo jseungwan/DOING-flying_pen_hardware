@@ -25,7 +25,7 @@ su_fkik() : Node("su_fkik"),
     tf_broadcaster_(std::make_shared<tf2_ros::TransformBroadcaster>(this)),
     body_rpy_meas_dot_filter(3, 3, 0.03), // LPF INIT
     body_omega_dot_filter(3, 3, 0.03), // LPF INIT
-    global_xyz_meas_dot_raw_filter(3, 3, 0.03)    
+    global_xyz_meas_dot_raw_filter(3, 1, 0.03)    
    {
 
     EE_offset_d << 0.2, 0, 0; // MJ. EE_offset_d는 엔드이펙터의 길이 
@@ -118,22 +118,11 @@ su_fkik() : Node("su_fkik"),
 
       void hardware_numerical_calc()
       {
-          RCLCPP_INFO(this->get_logger(), "[hardware_numerical_calc] Called - simulation_Flag: %s", simulation_Flag ? "TRUE" : "FALSE");
-
-          RCLCPP_INFO(this->get_logger(), "global_xyz_meas:     [%f, %f, %f]",
-                      global_xyz_meas[0], global_xyz_meas[1], global_xyz_meas[2]);
-          RCLCPP_INFO(this->get_logger(), "global_xyz_meas_prev:[%f, %f, %f]",
-                      global_xyz_meas_prev[0], global_xyz_meas_prev[1], global_xyz_meas_prev[2]);
-
           global_xyz_meas_dot_raw = (global_xyz_meas - global_xyz_meas_prev) / 0.03;
 
-          RCLCPP_INFO(this->get_logger(), "meas_dot_raw:        [%f, %f, %f]",
-                      global_xyz_meas_dot_raw[0], global_xyz_meas_dot_raw[1], global_xyz_meas_dot_raw[2]);
 
           global_xyz_vel_meas = global_xyz_meas_dot_raw_filter.apply(global_xyz_meas_dot_raw);
 
-          RCLCPP_INFO(this->get_logger(), "filtered_velocity:   [%f, %f, %f]",
-                      global_xyz_vel_meas[0], global_xyz_vel_meas[1], global_xyz_vel_meas[2]);
 
           global_xyz_meas_prev = global_xyz_meas;
 
@@ -217,9 +206,9 @@ su_fkik() : Node("su_fkik"),
         global_EE_xyz_vel_msg.data.push_back(global_EE_xyz_vel_meas[0]);
         global_EE_xyz_vel_msg.data.push_back(global_EE_xyz_vel_meas[1]);
         global_EE_xyz_vel_msg.data.push_back(global_EE_xyz_vel_meas[2]);
-        global_EE_xyz_vel_msg.data.push_back(body_omega_meas[0]);
-        global_EE_xyz_vel_msg.data.push_back(body_omega_meas[1]);
-        global_EE_xyz_vel_msg.data.push_back(body_omega_meas[2]);
+        global_EE_xyz_vel_msg.data.push_back(global_xyz_meas_dot_raw[0]);
+        global_EE_xyz_vel_msg.data.push_back(global_xyz_meas_dot_raw[1]);
+        global_EE_xyz_vel_msg.data.push_back(global_xyz_meas_dot_raw[2]);
         global_EE_xyz_vel_publisher_->publish(global_EE_xyz_vel_msg);
 
       }
@@ -310,6 +299,9 @@ su_fkik() : Node("su_fkik"),
         for (int i = 0; i < 3; ++i)
             for (int j = 0; j < 3; ++j)
                 R_B(i, j) = mat[i][j];
+                
+      RCLCPP_INFO(this->get_logger(), "/pose sub: x y z [%lf, %lf, %lf]", global_xyz_meas[0], global_xyz_meas[1], global_xyz_meas[2]);
+      RCLCPP_INFO(this->get_logger(), "/r p y: [%lf, %lf, %lf]", roll, pitch, yaw_continuous);
     }
 
     void cf_velocity_real_subscriber(const crazyflie_interfaces::msg::LogDataGeneric::SharedPtr msg)

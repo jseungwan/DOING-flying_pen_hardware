@@ -2,25 +2,25 @@ rosbag2_bagfile_information:
   version: 5
   storage_identifier: sqlite3
   duration:
-    nanoseconds: 8778157097
+    nanoseconds: 6847384819
   starting_time:
-    nanoseconds_since_epoch: 1742913354220885373
-  message_count: 879
+    nanoseconds_since_epoch: 1742929926134284262
+  message_count: 686
   topics_with_message_count:
     - topic_metadata:
         name: /cf2/pose
         type: geometry_msgs/msg/PoseStamped
         serialization_format: cdr
         offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
-      message_count: 879
+      message_count: 686
   compression_format: ""
   compression_mode: ""
   relative_file_paths:
-    - rosbag2_2025_03_25-23_35_54_0.db3
+    - rosbag2_2025_03_26-04_12_06_0.db3
   files:
-    - path: rosbag2_2025_03_25-23_35_54_0.db3
+    - path: rosbag2_2025_03_26-04_12_06_0.db3
       starting_time:
-        nanoseconds_since_epoch: 1742913354220885373
+        nanoseconds_since_epoch: 1742929926134284262
       duration:
-        nanoseconds: 8778157097
-      message_count: 879
+        nanoseconds: 6847384819
+      message_count: 686
